@@ -1,0 +1,36 @@
+# ABC Corp Employee Leave Management System
+
+## Backend
+- Java 21
+- Spring Boot 3.5.4
+- Spring Web
+- Spring Data JPA
+- Hibernate (managed by Spring Boot)
+- Spring Security
+- JJWT 0.12.6
+- Spring Boot Validation
+- MySQL 8+
+- Maven 3.9+
+- Lombok
+
+## Frontend
+- Node.js 20+ recommended
+- npm
+- React 19.1.1
+- Vite 7.1.2
+- React Router 7.8.2
+- Axios 1.11.0
+- Lucide React 0.468.0
+- HTML5
+- CSS3
+
+## Development Tools
+- IntelliJ IDEA / VS Code / Spring Tool Suite
+- MySQL Workbench
+- Postman
+- Git and GitHub
+
+## Local URLs
+- Frontend: http://localhost:5173
+- Backend: http://localhost:8080
+- MySQL: localhost:3306

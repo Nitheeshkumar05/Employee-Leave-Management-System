@@ -1,0 +1,16 @@
+package com.example.employeemanagement.service;
+
+import com.example.employeemanagement.dto.*; import com.example.employeemanagement.exception.*; import com.example.employeemanagement.model.*; import com.example.employeemanagement.repository.*; import lombok.RequiredArgsConstructor; import org.springframework.stereotype.Service; import java.time.*; import java.util.*;
+@Service @RequiredArgsConstructor
+public class LeaveRequestService {
+    private final LeaveRequestRepository leaves; private final EmployeeRepository employees;
+    public List<LeaveResponse> all(){return leaves.findAllByOrderByRequestedAtDesc().stream().map(this::map).toList();}
+    public List<LeaveResponse> pending(){return leaves.findAllByOrderByRequestedAtDesc().stream().filter(x->x.getStatus()==LeaveStatus.PENDING).map(this::map).toList();}
+    public List<LeaveResponse> mine(String email){Employee e=employee(email);return leaves.findByEmployeeIdOrderByRequestedAtDesc(e.getId()).stream().map(this::map).toList();}
+    public LeaveResponse create(String email,LeaveCreateRequest r){Employee e=employee(email);validateDates(r.startDate(),r.endDate());LeaveRequest l=LeaveRequest.builder().employee(e).leaveType(r.leaveType()).startDate(r.startDate()).endDate(r.endDate()).reason(r.reason().trim()).status(LeaveStatus.PENDING).build();return map(leaves.save(l));}
+    public LeaveResponse decide(Long id,String hrEmail,boolean approve,LeaveDecisionRequest request){LeaveRequest l=leaves.findById(id).orElseThrow(()->new ResourceNotFoundException("Leave request not found"));if(l.getStatus()!=LeaveStatus.PENDING)throw new BadRequestException("Only pending leave requests can be reviewed");Employee hr=employee(hrEmail);l.setStatus(approve?LeaveStatus.APPROVED:LeaveStatus.REJECTED);l.setHrNote(request==null||request.note()==null?"":request.note().trim());l.setReviewedBy(hr);l.setReviewedAt(LocalDateTime.now());return map(leaves.save(l));}
+    public void cancel(Long id,String email){LeaveRequest l=leaves.findById(id).orElseThrow(()->new ResourceNotFoundException("Leave request not found"));if(!l.getEmployee().getEmail().equalsIgnoreCase(email))throw new org.springframework.security.access.AccessDeniedException("You can only cancel your own leave request");if(l.getStatus()!=LeaveStatus.PENDING)throw new BadRequestException("Only pending leave requests can be cancelled");leaves.delete(l);}
+    private Employee employee(String email){return employees.findByEmailIgnoreCase(email).orElseThrow(()->new ResourceNotFoundException("Employee not found"));}
+    private void validateDates(LocalDate s,LocalDate e){if(e.isBefore(s))throw new BadRequestException("End date cannot be before start date");if(s.isBefore(LocalDate.now()))throw new BadRequestException("Leave cannot start in the past");}
+    private LeaveResponse map(LeaveRequest l){long days=java.time.temporal.ChronoUnit.DAYS.between(l.getStartDate(),l.getEndDate())+1;return new LeaveResponse(l.getId(),l.getEmployee().getId(),l.getEmployee().getName(),l.getEmployee().getEmail(),l.getEmployee().getDepartment()==null?"Unassigned":l.getEmployee().getDepartment().getName(),l.getLeaveType(),l.getStartDate(),l.getEndDate(),days,l.getReason(),l.getStatus(),l.getHrNote(),l.getReviewedBy()==null?null:l.getReviewedBy().getName(),l.getRequestedAt(),l.getReviewedAt());}
+}
