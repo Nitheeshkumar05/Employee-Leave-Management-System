@@ -1,0 +1,28 @@
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.env
+Frontend/.env.local
+Frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Backend
+Backend/employee-leave-management/target/
+Backend/employee-leave-management/.mvn/
+Backend/employee-leave-management/*.log
+*.class
+*.jar
+*.war
+
+# IDE / OS
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
