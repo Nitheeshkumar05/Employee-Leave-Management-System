@@ -8,6 +8,8 @@
 [![Vite](https://img.shields.io/badge/Vite-5-purple.svg?logo=vite)](https://vitejs.dev/)
 [![MySQL](https://img.shields.io/badge/MySQL-8-orange.svg?logo=mysql)](https://www.mysql.com/)
 
+### [🌐 View Live Demo](https://employee-leave-management-system-cf3p.onrender.com/)
+
 </div>
 
 ## ✨ Features
